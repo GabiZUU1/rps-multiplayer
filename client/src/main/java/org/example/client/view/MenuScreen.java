@@ -33,12 +33,12 @@ public class MenuScreen extends BorderPane
         Label statsTitle = new Label("Network");
         statsTitle.setStyle(TEXT + "-fx-font-weight: bold;");
 
-        TextField ipField = new TextField("localhost");
+        TextField ipField = new TextField("127.0.0.1");
         ipField.setEditable(false);
         ipField.setStyle(FIELD);
         ipField.setPrefColumnCount(10);
 
-        TextField portField = new TextField("5000");
+        TextField portField = new TextField("7777");
         portField.setStyle(FIELD);
         portField.setPrefColumnCount(10);
 
@@ -56,8 +56,7 @@ public class MenuScreen extends BorderPane
         VBox stats = new VBox(10, statsTitle, statsGrid);
         stats.setPadding(new Insets(12));
         stats.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        stats.setStyle("-fx-background-color: #181825; -fx-background-radius: 8;"
-                + "-fx-border-color: #45475a; -fx-border-radius: 8;");
+        stats.setStyle("-fx-background-color: #181825; -fx-background-radius: 8; -fx-border-color: #45475a; -fx-border-radius: 8;");
 
         StackPane top = new StackPane(title, stats);
         StackPane.setAlignment(title, Pos.TOP_CENTER);
