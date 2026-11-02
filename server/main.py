@@ -1,16 +1,32 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from net.ClientHandler import ClientHandler
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+8 to toggle the breakpoint.
+def main():
+    handler = ClientHandler()
+    handler.startServer()
 
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+     # rps-network-game/
+     # ├── docs/protocol.md
+     # ├── server/                      # Python
+     # │   ├── CMakeLists.txt
+     # │   ├── src/
+     # │   │   ├── main.cpp
+     # │   │   ├── net/        (ClientHandler, Protocol, Broadcaster)
+     # │   │   ├── controller/ (GameController)
+     # │   │   ├── model/      (Game, Player, Move, RoundResolver)
+     # │   │   └── repo/       (PlayerRepository, InMemoryPlayerRepository)
+     # │   └── tests/
+     # └── client/                      # Java
+     #     ├── pom.xml (or build.gradle)
+     #     └── src/main/java/rps/
+     #         ├── Main.java
+     #         ├── net/        (Connection, Protocol)
+     #         ├── controller/ (GameController)
+     #         ├── model/      (GameModel)
+     #         └── view/       (screens)

@@ -1,31 +1,29 @@
 package org.example.client.net;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 
 public class Client
 {
     // manages the transportation of the data
     private Socket s = null;
-    private DataInputStream in = null;
-    private DataOutputStream out = null;
+    private BufferedReader in = null;
+    private PrintWriter out = null;
 
-    public Client(String address, int port)
+    public Client(String address, int port) throws Exception
     {
         try
         {
             this.s = new Socket(address, port);
-            this.in = new DataInputStream(s.getInputStream()); // to read data
-            this.out = new DataOutputStream(s.getOutputStream()); // to send data
+            this.in = new BufferedReader(new InputStreamReader(this.s.getInputStream(), StandardCharsets.UTF_8)); // to read data
+            this.out = new PrintWriter(new OutputStreamWriter(this.s.getOutputStream(), StandardCharsets.UTF_8), true); // to send data
 
-            this.out.writeUTF("Sunt client!");
+            // make a background thread for reading messages from the server, such as the HELLO handshake
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            throw new Exception(e);
         }
         finally
         {
@@ -37,8 +35,14 @@ public class Client
             }
             catch (IOException e)
             {
-                throw new RuntimeException(e);
+                throw new Exception(e);
             }
         }
+    }
+
+    public void sendMessage(String message)
+    {
+        this.out.print(message + "\n");
+        this.out.flush();
     }
 }

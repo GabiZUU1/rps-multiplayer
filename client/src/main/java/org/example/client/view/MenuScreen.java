@@ -34,11 +34,12 @@ public class MenuScreen extends BorderPane
         statsTitle.setStyle(TEXT + "-fx-font-weight: bold;");
 
         TextField ipField = new TextField("127.0.0.1");
-        ipField.setEditable(false);
+        // ipField.setEditable(false);
         ipField.setStyle(FIELD);
         ipField.setPrefColumnCount(10);
 
         TextField portField = new TextField("7777");
+        portField.setEditable(false);
         portField.setStyle(FIELD);
         portField.setPrefColumnCount(10);
 
@@ -67,6 +68,7 @@ public class MenuScreen extends BorderPane
         // center
         Label nameLabel = new Label("Name:");
         nameLabel.setStyle(TEXT);
+
         TextField nameField = new TextField();
         nameField.setPromptText("Your name");
         nameField.setStyle(FIELD);
@@ -87,6 +89,17 @@ public class MenuScreen extends BorderPane
         exit.setPrefWidth(160);
 
         exit.setOnAction(e -> this.controller.exit());
+        join.setOnAction(e ->
+        {
+            try
+            {
+                this.controller.join(nameField.getText(), ipField.getText());
+            }
+            catch (Exception ex)
+            {
+                errorLabel.setText(ex.getMessage());
+            }
+        });
 
         VBox center = new VBox(18, nameRow, join, exit, errorLabel);
         center.setAlignment(Pos.CENTER);

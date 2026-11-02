@@ -14,7 +14,7 @@ public class GameController
         this.parent = parent;
     }
 
-    public void join(String name, String portText) throws Exception
+    public void join(String name, String ip) throws Exception
     {
         if(name.length() < 3)
         {
@@ -23,12 +23,6 @@ public class GameController
 
         try
         {
-            int port = Integer.parseInt(portText);
-            if(port < 1 || port > 65535)
-            {
-                throw new Exception("The port must be a number between 1 and 65535.");
-            }
-
             // if correct, connect and send join package
             this.client = new Client("127.0.0.1", 7777);
         }
