@@ -3,6 +3,7 @@ package org.example.client.net;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 public class Client
 {
@@ -10,14 +11,32 @@ public class Client
     private BufferedReader in;
     private PrintWriter out;
 
-    public Client(String address, int port) throws Exception
+    private final Consumer<String> onLine;
+
+    public Client(String address, int port, Consumer<String> onLine) throws Exception
     {
         this.socket = new Socket(address, port);
         this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), StandardCharsets.UTF_8));
         this.out = new PrintWriter(new OutputStreamWriter(this.socket.getOutputStream(), StandardCharsets.UTF_8));
+        this.onLine = onLine;
 
         System.out.println("Connected to server!");
         this.startListening();
+    }
+
+    public synchronized void send(String line)
+    {
+        this.out.print(line + "\n");
+        this.out.flush();
+    }
+
+    public void close()
+    {
+        try
+        {
+            this.socket.close();
+        }
+        catch (IOException e){}
     }
 
     private void startListening()
@@ -31,7 +50,7 @@ public class Client
                 {
                     System.out.println("Server: " + line);
 
-                    
+                    this.onLine.accept(line);
                 }
             }
             catch (IOException e)
