@@ -1,9 +1,9 @@
-from net.ClientHandler import ClientHandler
+from net.Server import Server
 
 
 def main():
-    handler = ClientHandler()
-    handler.startServer()
+    server = Server()
+    server.start()
 
 if __name__ == "__main__":
     try:

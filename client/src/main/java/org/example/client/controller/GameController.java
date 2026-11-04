@@ -14,24 +14,6 @@ public class GameController
         this.parent = parent;
     }
 
-    public void join(String name, String ip) throws Exception
-    {
-        if(name.length() < 3)
-        {
-            throw new Exception("Name must have at least 3 characters!");
-        }
-
-        try
-        {
-            // if correct, connect and send join package
-            this.client = new Client("127.0.0.1", 7777);
-        }
-        catch (NumberFormatException e)
-        {
-            throw new Exception(e.getMessage());
-        }
-    }
-
     public void exit()
     {
         Platform.exit();

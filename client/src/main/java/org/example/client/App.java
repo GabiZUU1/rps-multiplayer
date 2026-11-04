@@ -4,18 +4,21 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.example.client.controller.ClientController;
 import org.example.client.controller.GameController;
 import org.example.client.view.MenuScreen;
 
 public class App extends Application
 {
     private StackPane root;
-    private GameController controller;
+    private GameController gameController;
+    private ClientController clientController;
 
     @Override
     public void start(Stage stage)
     {
-        this.controller = new GameController(this);
+        this.gameController = new GameController(this);
+        this.clientController = new ClientController(this);
 
         this.root = new StackPane();
         showMainMenu();
@@ -28,6 +31,6 @@ public class App extends Application
 
     public void showMainMenu()
     {
-        this.root.getChildren().setAll(new MenuScreen(this.controller));
+        this.root.getChildren().setAll(new MenuScreen(this.gameController, this.clientController));
     }
 }

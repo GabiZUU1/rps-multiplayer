@@ -1,7 +1,13 @@
 package org.example.client.net;
 
+import org.example.client.model.Command;
+
 public class Protocol
 {
-    // encodes/decodes the data
+    public Protocol(){}
 
+    public Command decode(String message)
+    {
+
+    }
 }

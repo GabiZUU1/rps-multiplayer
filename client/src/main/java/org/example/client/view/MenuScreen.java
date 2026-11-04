@@ -6,11 +6,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import org.example.client.controller.ClientController;
 import org.example.client.controller.GameController;
 
 public class MenuScreen extends BorderPane
 {
-    private final GameController controller;
+    private final GameController gameController;
+    private final ClientController clientController;
 
     private static final String TEXT = "-fx-text-fill: white;";
     private static final String FIELD =
@@ -20,8 +22,10 @@ public class MenuScreen extends BorderPane
             "-fx-background-color: #89b4fa; -fx-text-fill: #1e1e2e; -fx-font-weight: bold;"
                     + "-fx-background-radius: 6; -fx-padding: 8 20; -fx-cursor: hand;";
 
-    public MenuScreen(GameController controller) {
-        this.controller = controller;
+    public MenuScreen(GameController gameController, ClientController clientController)
+    {
+        this.gameController = gameController;
+        this.clientController = clientController;
 
         setStyle("-fx-background-color: #1e1e2e;");
         setPadding(new Insets(20));
@@ -88,12 +92,12 @@ public class MenuScreen extends BorderPane
         exit.setStyle(BUTTON.replace("#89b4fa", "#585b70").replace("#1e1e2e;", "white;"));
         exit.setPrefWidth(160);
 
-        exit.setOnAction(e -> this.controller.exit());
+        exit.setOnAction(e -> this.gameController.exit());
         join.setOnAction(e ->
         {
             try
             {
-                this.controller.join(nameField.getText(), ipField.getText());
+                this.clientController.join(nameField.getText(), ipField.getText(), portField.getText());
             }
             catch (Exception ex)
             {

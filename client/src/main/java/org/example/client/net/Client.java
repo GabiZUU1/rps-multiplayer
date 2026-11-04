@@ -6,43 +6,44 @@ import java.nio.charset.StandardCharsets;
 
 public class Client
 {
-    // manages the transportation of the data
-    private Socket s = null;
-    private BufferedReader in = null;
-    private PrintWriter out = null;
+    private Socket socket;
+    private BufferedReader in;
+    private PrintWriter out;
 
     public Client(String address, int port) throws Exception
     {
-        try
-        {
-            this.s = new Socket(address, port);
-            this.in = new BufferedReader(new InputStreamReader(this.s.getInputStream(), StandardCharsets.UTF_8)); // to read data
-            this.out = new PrintWriter(new OutputStreamWriter(this.s.getOutputStream(), StandardCharsets.UTF_8), true); // to send data
+        this.socket = new Socket(address, port);
+        this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), StandardCharsets.UTF_8));
+        this.out = new PrintWriter(new OutputStreamWriter(this.socket.getOutputStream(), StandardCharsets.UTF_8));
 
-            // make a background thread for reading messages from the server, such as the HELLO handshake
-        }
-        catch (IOException e)
-        {
-            throw new Exception(e);
-        }
-        finally
+        System.out.println("Connected to server!");
+        this.startListening();
+    }
+
+    private void startListening()
+    {
+        Thread t = new Thread(() ->
         {
             try
             {
-                if(this.out != null) this.out.close();
-                if(this.in != null) this.in.close();
-                if(this.s != null) this.s.close();
+                String line;
+                while((line = this.in.readLine()) != null)
+                {
+                    System.out.println("Server: " + line);
+
+                    
+                }
             }
             catch (IOException e)
             {
-                throw new Exception(e);
+                throw new RuntimeException(e);
             }
-        }
-    }
-
-    public void sendMessage(String message)
-    {
-        this.out.print(message + "\n");
-        this.out.flush();
+            finally
+            {
+                System.out.println("Disconnected from server!");
+            }
+        });
+        t.setDaemon(true);
+        t.start();
     }
 }
