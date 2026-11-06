@@ -3,6 +3,8 @@ package org.example.client.net;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 
 public class Client
@@ -20,7 +22,7 @@ public class Client
         this.out = new PrintWriter(new OutputStreamWriter(this.socket.getOutputStream(), StandardCharsets.UTF_8));
         this.onLine = onLine;
 
-        System.out.println("Connected to server!");
+        this.println("Connected to server!");
         this.startListening();
     }
 
@@ -48,21 +50,29 @@ public class Client
                 String line;
                 while((line = this.in.readLine()) != null)
                 {
-                    System.out.println("Server: " + line);
+                    this.println("Server: " + line);
 
                     this.onLine.accept(line);
                 }
             }
             catch (IOException e)
             {
-                throw new RuntimeException(e);
+                this.println(e.getMessage());
             }
             finally
             {
-                System.out.println("Disconnected from server!");
+                this.println("Disconnected from server!");
             }
         });
         t.setDaemon(true);
         t.start();
+    }
+
+    private void println(String x)
+    {
+        DateTimeFormatter frm = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+        System.out.print("[" + LocalTime.now().format(frm) + "] ");
+        System.out.println(x);
     }
 }

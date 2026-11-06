@@ -1,5 +1,6 @@
 from threading import Lock
 
+from Utils import Utils
 from exceptions.AlreadyExistsException import AlreadyExistsException
 from net.Protocol import Protocol
 
@@ -19,5 +20,5 @@ class GameController:
                         self.repo.addPlayer(cmd.arg, handler)
                         handler.send(self.protocol.ok())
                     except AlreadyExistsException as e:
-                        print(e)
-                        handler.send(self.protocol.error(e))
+                        print(f"{Utils.fTime()} {e}")
+                        handler.send(self.protocol.error("ALREADY_EXISTS"))

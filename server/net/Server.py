@@ -1,6 +1,7 @@
 import socket
 from threading import Thread
 
+from Utils import Utils
 from net.ClientHandler import ClientHandler
 
 
@@ -14,13 +15,13 @@ class Server:
         self.s.listen(5)
 
     def start(self):
-        print("Server started on 0.0.0.0:7777")
-        print("Waiting for clients...")
+        print(f"{Utils.fTime()} Server started on 0.0.0.0:7777")
+        print(f"{Utils.fTime()} Waiting for clients...")
         i = 0
         while True:
             conn, addr = self.s.accept()
 
             i += 1
-            print(f"Client {i} connected: {addr}")
-            handler = ClientHandler(conn, addr, self.controller)
+            print(f"{Utils.fTime()} Client {i} connected: {addr}")
+            handler = ClientHandler(i, conn, addr, self.controller)
             Thread(target = handler.start, daemon = True).start()

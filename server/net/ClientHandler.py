@@ -1,8 +1,10 @@
+from Utils import Utils
 from net.Protocol import Protocol
 
 
 class ClientHandler:
-    def __init__(self, conn, addr, controller):
+    def __init__(self, nr, conn, addr, controller):
+        self.nr = nr
         self.controller = controller
         self.conn = conn
         self.addr = addr
@@ -14,12 +16,12 @@ class ClientHandler:
         try:
             with self.conn.makefile("r", encoding = "utf-8", newline = "\n") as reader:
                 for line in reader:
-                    print(f"{self.addr} says: {line!r}")
+                    print(f"{Utils.fTime()} {self.addr}({self.nr}) says: {line!r}")
                     self.controller.parse(self, line)
         except OSError:
             pass
         finally:
-            print(f"{self.addr} disconnected")
+            print(f"{Utils.fTime()} {self.addr}({self.nr}) disconnected")
             self.conn.close()
 
     def send(self, message):

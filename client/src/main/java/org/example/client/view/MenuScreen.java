@@ -83,6 +83,7 @@ public class MenuScreen extends BorderPane
 
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: #f38ba8;");
+        errorLabel.textProperty().bind(this.clientController.errorProperty());
 
         Button join = new Button("Join");
         join.setStyle(BUTTON);

@@ -1,3 +1,3 @@
 class AlreadyExistsException(Exception):
-    def __init__(self, *args: object):
-        super(*args)
+    def __init__(self, msg: str):
+        super().__init__(msg)
