@@ -5,7 +5,9 @@ from net.ClientHandler import ClientHandler
 
 
 class Server:
-    def __init__(self):
+    def __init__(self, gameController):
+        self.controller = gameController
+
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(("0.0.0.0", 7777))
@@ -20,5 +22,5 @@ class Server:
 
             i += 1
             print(f"Client {i} connected: {addr}")
-            handler = ClientHandler(conn, addr)
+            handler = ClientHandler(conn, addr, self.controller)
             Thread(target = handler.start, daemon = True).start()

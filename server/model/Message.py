@@ -1,4 +1,4 @@
 class Message:
-    def __init__(self, command, arg):
-        self.command = command
+    def __init__(self, name, arg):
+        self.name = name
         self.arg = arg

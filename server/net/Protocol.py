@@ -11,3 +11,9 @@ class Protocol:
 
     def hello(self):
         return f"HELLO RPS {self.PROTOCOL_VERSION}"
+
+    def ok(self):
+        return "OK"
+
+    def error(self, message):
+        return f"ERROR {message}"
