@@ -16,4 +16,9 @@ public class Protocol
     {
         return "JOIN " + name;
     }
+
+    public static String start()
+    {
+        return "START";
+    }
 }

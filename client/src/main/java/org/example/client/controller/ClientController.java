@@ -3,6 +3,8 @@ package org.example.client.controller;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.example.client.App;
 import org.example.client.model.Message;
 import org.example.client.net.Client;
@@ -12,6 +14,7 @@ public class ClientController
 {
     private final StringProperty error = new SimpleStringProperty("");
     private final App parent;
+    private final ObservableList<String> players = FXCollections.observableArrayList();
     private Client client;
     private String name;
 
@@ -58,6 +61,19 @@ public class ClientController
         }
     }
 
+    public void start()
+    {
+        if(this.client != null)
+        {
+            this.client.send(Protocol.start());
+        }
+    }
+
+    public ObservableList<String> getPlayers()
+    {
+        return this.players;
+    }
+
     private void handleLine(String line)
     {
         Message m = Protocol.parse(line);
@@ -69,6 +85,7 @@ public class ClientController
                 this.error.set(this.errorText(m.arg()));
                 this.client.close();
             }
+            case "OK" -> this.parent.showLobby();
         }
     }
 

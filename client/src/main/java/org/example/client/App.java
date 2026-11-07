@@ -6,6 +6,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.example.client.controller.ClientController;
 import org.example.client.controller.GameController;
+import org.example.client.view.LobbyMenu;
 import org.example.client.view.MenuScreen;
 
 public class App extends Application
@@ -32,5 +33,10 @@ public class App extends Application
     public void showMainMenu()
     {
         this.root.getChildren().setAll(new MenuScreen(this.gameController, this.clientController));
+    }
+
+    public void showLobby()
+    {
+        this.root.getChildren().setAll(new LobbyMenu(this.gameController, this.clientController));
     }
 }
