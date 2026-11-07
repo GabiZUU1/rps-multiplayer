@@ -17,3 +17,9 @@ class MemoryRepository:
             raise DoesNotExistException(f"Player with the name {name} does not exist!")
 
         self.players.pop(name)
+
+    def getPlayers(self):
+        return list(self.players.keys())
+
+    def getHandlers(self):
+        return list(self.players.values())

@@ -1,11 +1,13 @@
 from controller.GameController import GameController
 from net.Server import Server
+from net.Broadcaster import Broadcaster
 from repository.MemoryRepository import MemoryRepository
 
 
 def main():
     repo = MemoryRepository()
-    gameController = GameController(repo)
+    broadcaster = Broadcaster(repo)
+    gameController = GameController(repo, broadcaster)
     server = Server(gameController)
     server.start()
 

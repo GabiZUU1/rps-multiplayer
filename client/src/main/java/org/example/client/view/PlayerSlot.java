@@ -51,6 +51,10 @@ public class PlayerSlot extends VBox
             "-fx-background-color: #181825; -fx-background-radius: 12;"
                     + "-fx-border-color: #89b4fa; -fx-border-radius: 12; -fx-border-width: 2;";
 
+    private static final String BOX_ME =
+            "-fx-background-color: #1f2a28; -fx-background-radius: 12;"
+                    + "-fx-border-color: #a6e3a1; -fx-border-radius: 12; -fx-border-width: 2;";
+
     private final StackPane box = new StackPane();
     private final ImageView iconView = new ImageView();
     private final Label nameLabel = new Label();
@@ -83,14 +87,25 @@ public class PlayerSlot extends VBox
         setPlayer("");
     }
 
-    // empty or null name = free slot
     public void setPlayer(String name)
+    {
+        setPlayer(name, false);
+    }
+
+    // me = true highlights the slot of the player who is using this client
+    public void setPlayer(String name, boolean me)
     {
         boolean taken = name != null && !name.isEmpty();
 
+        String style = BOX_EMPTY;
+        if(taken)
+        {
+            style = me ? BOX_ME : BOX_TAKEN;
+        }
+
         this.nameLabel.setText(taken ? name : "");
-        this.box.setStyle(taken ? BOX_TAKEN : BOX_EMPTY);
-        this.iconView.setOpacity(taken ? 1.0 : 0.45);    // dim the dots while nobody is in the slot
+        this.box.setStyle(style);
+        this.iconView.setOpacity(taken ? 1.0 : 0.45);
     }
 
     public void setIcon(Icon icon)

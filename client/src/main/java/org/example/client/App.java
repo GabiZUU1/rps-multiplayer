@@ -24,9 +24,8 @@ public class App extends Application
         this.root = new StackPane();
         showMainMenu();
 
-        stage.setTitle("Rock, Paper, Scissors — Main Menu");
-        stage.setScene(new Scene(this.root, 640, 480));
-        // stage.setMaximized(true);
+        stage.setTitle("Rock, Paper, Scissors");
+        stage.setScene(new Scene(this.root, 1000, 820));
         stage.show();
     }
 

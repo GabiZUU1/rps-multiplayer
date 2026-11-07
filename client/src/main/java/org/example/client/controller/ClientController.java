@@ -37,9 +37,9 @@ public class ClientController
             this.error.set("Name must have at least 3 characters!");
             return;
         }
-        if(name.contains(" "))
+        if(name.contains(" ") || name.contains(","))
         {
-            this.error.set("The name cannot contain spaces!");
+            this.error.set("The name cannot contain spaces or commas!");
             return;
         }
 
@@ -69,6 +69,11 @@ public class ClientController
         }
     }
 
+    public String getName()
+    {
+        return this.name;
+    }
+
     public ObservableList<String> getPlayers()
     {
         return this.players;
@@ -86,6 +91,7 @@ public class ClientController
                 this.client.close();
             }
             case "OK" -> this.parent.showLobby();
+            case "PLAYERS" -> this.players.setAll(m.arg().split(","));
         }
     }
 

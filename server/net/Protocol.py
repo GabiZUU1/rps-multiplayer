@@ -15,5 +15,8 @@ class Protocol:
     def ok(self):
         return "OK"
 
+    def players(self, players):
+        return "PLAYERS " + ",".join(players)
+
     def error(self, message):
         return f"ERROR {message}"

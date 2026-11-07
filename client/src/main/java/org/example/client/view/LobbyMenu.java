@@ -69,9 +69,12 @@ public class LobbyMenu extends BorderPane
 
     private void refresh(ObservableList<String> players)
     {
+        String me = this.clientController.getName();
+
         for(int i = 0; i < SLOTS; i++)
         {
-            this.slots[i].setPlayer(i < players.size() ? players.get(i) : "");
+            String player = i < players.size() ? players.get(i) : "";
+            this.slots[i].setPlayer(player, player.equals(me));
         }
     }
 }
