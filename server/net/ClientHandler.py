@@ -5,6 +5,7 @@ from net.Protocol import Protocol
 class ClientHandler:
     def __init__(self, nr, conn, addr, controller):
         self.nr = nr
+        self.name = None
         self.controller = controller
         self.conn = conn
         self.addr = addr
@@ -22,6 +23,7 @@ class ClientHandler:
             pass
         finally:
             print(f"{Utils.fTime()} {self.addr}({self.nr}) disconnected")
+            self.controller.onDisconnect(self)
             self.conn.close()
 
     def send(self, message):

@@ -1,4 +1,5 @@
 from exceptions.AlreadyExistsException import AlreadyExistsException
+from exceptions.DoesNotExistException import DoesNotExistException
 
 
 class MemoryRepository:
@@ -10,3 +11,9 @@ class MemoryRepository:
             raise AlreadyExistsException(f"Player with the name {name} already exists!")
 
         self.players[name] = handler
+
+    def removePlayer(self, name):
+        if name not in self.players.keys():
+            raise DoesNotExistException(f"Player with the name {name} does not exist!")
+
+        self.players.pop(name)
