@@ -38,7 +38,7 @@ public class MenuScreen extends BorderPane
         statsTitle.setStyle(TEXT + "-fx-font-weight: bold;");
 
         TextField ipField = new TextField("127.0.0.1");
-        // ipField.setEditable(false);
+        ipField.setEditable(true);
         ipField.setStyle(FIELD);
         ipField.setPrefColumnCount(10);
 
@@ -96,14 +96,7 @@ public class MenuScreen extends BorderPane
         exit.setOnAction(e -> this.gameController.exit());
         join.setOnAction(e ->
         {
-            try
-            {
-                this.clientController.join(nameField.getText(), ipField.getText(), portField.getText());
-            }
-            catch (Exception ex)
-            {
-                errorLabel.setText(ex.getMessage());
-            }
+            this.clientController.join(nameField.getText(), ipField.getText(), portField.getText());
         });
 
         VBox center = new VBox(18, nameRow, join, exit, errorLabel);

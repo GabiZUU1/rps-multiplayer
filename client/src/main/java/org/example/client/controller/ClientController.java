@@ -25,11 +25,18 @@ public class ClientController
         return this.error;
     }
 
-    public void join(String name, String ip, String port) throws Exception
+    public void join(String name, String ip, String port)
     {
+        this.error.set("");
+
         if(name.length() < 3)
         {
             this.error.set("Name must have at least 3 characters!");
+            return;
+        }
+        if(name.contains(" "))
+        {
+            this.error.set("The name cannot contain spaces!");
             return;
         }
 
@@ -45,7 +52,7 @@ public class ClientController
             // if correct, connect and send join package
             this.client = new Client(ip, Integer.parseInt(port), line -> Platform.runLater(() -> this.handleLine(line)));
         }
-        catch (NumberFormatException e)
+        catch (Exception e)
         {
             this.error.set("Could not connect: " + e.getMessage());
         }

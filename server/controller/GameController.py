@@ -12,7 +12,7 @@ class GameController:
         self.protocol = Protocol()
         self._lock = Lock()
 
-    def parse(self, handler, line):
+    def handleLine(self, handler, line):
         with self._lock:
             cmd = self.protocol.parse(line)
             match cmd.name:
@@ -26,6 +26,8 @@ class GameController:
                         handler.send(self.protocol.error("ALREADY_EXISTS"))
 
     def onDisconnect(self, handler):
+        if handler.name is None: return
+
         with self._lock:
             try:
                 self.repo.removePlayer(handler.name)

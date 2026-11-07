@@ -1,6 +1,7 @@
 package org.example.client.net;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
@@ -17,7 +18,8 @@ public class Client
 
     public Client(String address, int port, Consumer<String> onLine) throws Exception
     {
-        this.socket = new Socket(address, port);
+        this.socket = new Socket();
+        this.socket.connect(new InetSocketAddress(address, port), 3000);
         this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), StandardCharsets.UTF_8));
         this.out = new PrintWriter(new OutputStreamWriter(this.socket.getOutputStream(), StandardCharsets.UTF_8));
         this.onLine = onLine;
@@ -38,7 +40,7 @@ public class Client
         {
             this.socket.close();
         }
-        catch (IOException e){}
+        catch (IOException ignored) {}
     }
 
     private void startListening()

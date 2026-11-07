@@ -18,7 +18,7 @@ class ClientHandler:
             with self.conn.makefile("r", encoding = "utf-8", newline = "\n") as reader:
                 for line in reader:
                     print(f"{Utils.fTime()} {self.addr}({self.nr}) says: {line!r}")
-                    self.controller.parse(self, line)
+                    self.controller.handleLine(self, line)
         except OSError:
             pass
         finally:
@@ -27,4 +27,7 @@ class ClientHandler:
             self.conn.close()
 
     def send(self, message):
-        self.conn.sendall((message + "\n").encode("utf-8"))
+        try:
+            self.conn.sendall((message + "\n").encode("utf-8"))
+        except OSError as e:
+            print(f"[{Utils.fTime()}] {e}")
