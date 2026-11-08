@@ -39,7 +39,7 @@ class GameController:
                     elif len(self.repo.getPlayers()) < 2:
                         handler.send(self.protocol.error("NOT_ENOUGH_PLAYERS"))
                     else:
-                        self._startRound()
+                        self._startGame()
 
                 case "MOVE":
                     if self.game is None:
@@ -55,7 +55,6 @@ class GameController:
         self._startRound()
 
     def _startRound(self):
-        self.game = Game(self.repo.getPlayers())
         self.game.startRound()
         self.broadcaster.sendAll(self.protocol.gameStart())
         self.broadcaster.sendAll(self.protocol.round(20))
