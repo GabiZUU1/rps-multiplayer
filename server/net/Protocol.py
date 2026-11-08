@@ -18,5 +18,11 @@ class Protocol:
     def players(self, players):
         return "PLAYERS " + ",".join(players)
 
+    def gameStart(self):
+        return "GAME_START"
+
+    def round(self, time):
+        return f"ROUND {time}"
+
     def error(self, message):
         return f"ERROR {message}"

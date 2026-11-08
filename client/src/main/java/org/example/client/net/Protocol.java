@@ -21,4 +21,9 @@ public class Protocol
     {
         return "START";
     }
+
+    public static String move(String move)
+    {
+        return "MOVE " + move;
+    }
 }

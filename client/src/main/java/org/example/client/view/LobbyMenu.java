@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import org.example.client.controller.ClientController;
@@ -53,7 +54,12 @@ public class LobbyMenu extends BorderPane
         start.setStyle(BUTTON);
         start.setPrefWidth(160);
 
+        Label message = new Label();
+        message.setStyle("-fx-text-fill: #f38ba8;");
+        message.textProperty().bind(this.clientController.errorProperty());
+
         BorderPane bottom = new BorderPane();
+        bottom.setCenter(message);
         bottom.setLeft(exit);
         bottom.setRight(start);
         setBottom(bottom);

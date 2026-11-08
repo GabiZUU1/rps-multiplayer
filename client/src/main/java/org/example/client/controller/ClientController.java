@@ -1,22 +1,37 @@
 package org.example.client.controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+import javafx.util.Duration;
 import org.example.client.App;
 import org.example.client.model.Message;
 import org.example.client.net.Client;
 import org.example.client.net.Protocol;
 
+import java.sql.Time;
+
 public class ClientController
 {
     private final StringProperty error = new SimpleStringProperty("");
-    private final App parent;
+    private final StringProperty status = new SimpleStringProperty("");
+    private final StringProperty myPick = new SimpleStringProperty("");
+    private final IntegerProperty timeLeft = new SimpleIntegerProperty(0);
+    private final ObservableMap<String, String> picks = FXCollections.observableHashMap();
     private final ObservableList<String> players = FXCollections.observableArrayList();
+
+    private final App parent;
     private Client client;
     private String name;
+    private boolean joined = false;
+    private Timeline countdown;
 
     public ClientController(App parent)
     {
@@ -26,6 +41,36 @@ public class ClientController
     public StringProperty errorProperty()
     {
         return this.error;
+    }
+
+    public StringProperty statusProperty()
+    {
+        return this.status;
+    }
+
+    public StringProperty myPickProperty()
+    {
+        return this.myPick;
+    }
+
+    public IntegerProperty timeLeftProperty()
+    {
+        return this.timeLeft;
+    }
+
+    public ObservableMap<String, String> getPicks()
+    {
+        return this.picks;
+    }
+
+    public String getName()
+    {
+        return this.name;
+    }
+
+    public ObservableList<String> getPlayers()
+    {
+        return this.players;
     }
 
     public void join(String name, String ip, String port)
@@ -61,6 +106,20 @@ public class ClientController
         }
     }
 
+    public void pick(String move)
+    {
+        if(!this.myPick.get().isEmpty())
+        {
+            return;
+        }
+
+        this.myPick.set(move);
+        if(this.client != null)
+        {
+            this.client.send(Protocol.move(move));
+        }
+    }
+
     public void start()
     {
         if(this.client != null)
@@ -69,14 +128,21 @@ public class ClientController
         }
     }
 
-    public String getName()
+    private void startRound(int seconds)
     {
-        return this.name;
-    }
+        if(this.countdown != null)
+        {
+            this.countdown.stop();
+        }
 
-    public ObservableList<String> getPlayers()
-    {
-        return this.players;
+        this.picks.clear();
+        this.myPick.set("");
+        this.status.set("Pick your move!");
+        this.timeLeft.set(seconds);
+
+        this.countdown = new Timeline(new KeyFrame(Duration.seconds(1), e -> this.timeLeft.set(this.timeLeft.get() - 1)));
+        this.countdown.setCycleCount(seconds);
+        this.countdown.play();
     }
 
     private void handleLine(String line)
@@ -88,10 +154,20 @@ public class ClientController
             case "ERROR" ->
             {
                 this.error.set(this.errorText(m.arg()));
-                this.client.close();
+                if(!this.joined) this.client.close();
             }
-            case "OK" -> this.parent.showLobby();
+            case "OK" ->
+            {
+                this.joined = true;
+                this.parent.showLobby();
+            }
             case "PLAYERS" -> this.players.setAll(m.arg().split(","));
+            case "GAME_START" ->
+            {
+                this.error.set("");
+                this.parent.showGame();
+            }
+            case "ROUND" -> this.startRound(Integer.parseInt(m.arg()));
         }
     }
 
@@ -100,6 +176,8 @@ public class ClientController
         return switch (code)
         {
             case "ALREADY_EXISTS" -> "A player with this name already exists!";
+            case "GAME_RUNNING" -> "An game is already running, please wait until it ends!";
+            case "NOT_ENOUGH_PLAYERS" -> "You need at least 2 players to start an game!";
             default -> "Error, code: " + code;
         };
     }
