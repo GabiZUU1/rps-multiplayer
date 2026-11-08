@@ -24,5 +24,14 @@ class Protocol:
     def round(self, time):
         return f"ROUND {time}"
 
+    def result(self, moves):
+        return "RESULT " + ",".join(f"{n}={m}" for n, m in moves.items())
+
+    def scores(self, scores):
+        return "SCORES " + ",".join(f"{n}={s}" for n, s in scores.items())
+
+    def gameOver(self, winners):
+        return "GAME_OVER " + ",".join(winners)
+
     def error(self, message):
         return f"ERROR {message}"

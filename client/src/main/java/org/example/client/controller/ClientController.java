@@ -1,6 +1,7 @@
 package org.example.client.controller;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -30,7 +31,9 @@ public class ClientController
     private final App parent;
     private Client client;
     private String name;
+    private String lastScores = "";
     private boolean joined = false;
+    private boolean gameActive = false;
     private Timeline countdown;
 
     public ClientController(App parent)
@@ -165,10 +168,59 @@ public class ClientController
             case "GAME_START" ->
             {
                 this.error.set("");
+                this.gameActive = true;
+                this.lastScores = "";
                 this.parent.showGame();
             }
             case "ROUND" -> this.startRound(Integer.parseInt(m.arg()));
+            case "RESULT" -> this.showResult(m.arg());
+            case "SCORES" ->
+            {
+                this.lastScores = m.arg().replace(",", "   ").replace("=", ": ");
+                this.status.set("Scores: " + this.lastScores);
+            }
+            case "GAME_OVER" -> this.endGame(m.arg());
         }
+    }
+
+    private void endGame(String winners)
+    {
+        this.gameActive = false;
+        if(this.countdown != null)
+        {
+            this.countdown.stop();
+        }
+        this.timeLeft.set(0);
+
+        String scores = this.lastScores.isEmpty() ? "" : "  |  Scores: " + this.lastScores;
+        this.status.set("Game over! Winner: " + winners.replace(",", " & ") + scores);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(6));
+        pause.setOnFinished(e ->
+        {
+            if(!this.gameActive)
+            {
+                this.parent.showLobby();
+            }
+        });
+        pause.play();
+    }
+
+    private void showResult(String arg)
+    {
+        if(this.countdown != null)
+        {
+            this.countdown.stop();
+        }
+        this.timeLeft.set(0);
+
+        this.picks.clear();
+        for(String pair : arg.split(","))
+        {
+            String[] kv = pair.split("=");
+            this.picks.put(kv[0], kv[1]);
+        }
+        this.status.set("Round over!");
     }
 
     private String errorText(String code)

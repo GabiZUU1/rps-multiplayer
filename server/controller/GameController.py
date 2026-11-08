@@ -5,6 +5,7 @@ from Utils import Utils
 from exceptions.AlreadyExistsException import AlreadyExistsException
 from exceptions.DoesNotExistException import DoesNotExistException
 from model.Game import Game
+from model.RoundResolver import RoundResolver
 from net.Protocol import Protocol
 
 
@@ -41,11 +42,17 @@ class GameController:
                         self._startRound()
 
                 case "MOVE":
-                    if not self.game.submit(handler.name, cmd.arg):
+                    if self.game is None:
+                        handler.send(self.protocol.error("BAD_MOVE"))
+                    elif not self.game.submit(handler.name, cmd.arg):
                         handler.send(self.protocol.error("ALREADY_MOVED"))
                     elif self.game.allSubmitted():
                         self._endRound()
 
+    def _startGame(self):
+        self.game = Game(self.repo.getPlayers())
+        self.broadcaster.sendAll(self.protocol.gameStart())
+        self._startRound()
 
     def _startRound(self):
         self.game = Game(self.repo.getPlayers())
@@ -64,6 +71,39 @@ class GameController:
     def _endRound(self):
         self.game.roundActive = False
         self.tmr.cancel()
+
+        for name, p in RoundResolver.points(self.game.moves).items():
+            self.game.scores[name] += p
+
+        moves = {p: self.game.moves.get(p, "NONE") for p in self.game.players}
+        self.broadcaster.sendAll(self.protocol.result(moves))
+        self.broadcaster.sendAll(self.protocol.scores(self.game.scores))
+
+        if self.game.round >= self.game.maxRounds:
+            self._endGame()
+        else:
+            self.tmr = threading.Timer(4, self._onNextRound, args=[self.game.round])
+            self.tmr.daemon = True
+            self.tmr.start()
+
+    def _onNextRound(self, roundNumber):
+        with self._lock:
+            if self.game is None or self.game.round != roundNumber or self.game.roundActive:
+                return
+            if len(self.game.players) < 2:
+                self._endGame()
+            else:
+                self._startRound()
+
+    def _endGame(self):
+        if self.tmr is not None:
+            self.tmr.cancel()
+
+        scores = self.game.scores
+        best = max(scores.values(), default=0)
+        winners = [name for name, s in scores.items() if s == best]
+        self.broadcaster.sendAll(self.protocol.gameOver(winners))
+        self.game = None
 
     def onDisconnect(self, handler):
         if handler.name is None: return
